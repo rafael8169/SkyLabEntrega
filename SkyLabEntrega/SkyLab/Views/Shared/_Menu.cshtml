@@ -1,0 +1,79 @@
+﻿@using Microsoft.AspNet.Identity
+@using SkyLab.DAL
+@{
+    var menus = new[]
+                {
+                    new
+                    {
+                        LinkText = "Personas", ActionName = "index", ControllerName = "Personas", Roles = "Administrador"
+                    },
+                    new
+                    {
+                        LinkText = "Universidades", ActionName = "index", ControllerName = "Universidades", Roles = "Administrador"
+                    },
+                    new
+                    {
+                        LinkText = "Directivos", ActionName = "index", ControllerName = "Directivos", Roles = "Administrador"
+                    },
+                    new
+                    {
+                        LinkText = "Pre Grados", ActionName = "index", ControllerName = "Pregrados", Roles = "Administrador"
+                    },
+                    new
+                    {
+                        LinkText = "Docentes", ActionName = "index", ControllerName = "Docentes", Roles = "Administrador"
+                    },
+                    new
+                    {
+                        LinkText = "Alumnos", ActionName = "index", ControllerName = "Alumnos", Roles = "Administrador"
+                    },
+                    new
+                    {
+                        LinkText = "Acerca de", ActionName = "About", ControllerName = "Home", Roles = "Anonymous,All"
+                    },
+                    new
+                    {
+                        LinkText = "Contactenos", ActionName = "Contact", ControllerName = "Home", Roles = "Anonymous,All"
+                    }
+                };
+}
+<ul id="menu" class="nav navbar-nav">
+    @if (HttpContext.Current.User.Identity.IsAuthenticated)
+    {
+        var db = new SkyLabContext();
+
+        var userId = HttpContext.Current.User.Identity.GetUserId();
+
+        var roles = db.UsuariosRoles.Where(t => t.UsuarioId == userId).Select(t => t.Roles.Nombre);
+
+        //String[] roles = Roles.GetRolesForUser();
+        var links = from item in menus
+            where item.Roles.Split(new[]
+                                   {
+                                       ","
+                                   }, StringSplitOptions.RemoveEmptyEntries)
+                .Any(x => roles.Contains(x) || x == "All")
+            select item;
+        foreach (var link in links)
+        {@:
+            <li> @Html.ActionLink(link.LinkText, link.ActionName, link.ControllerName)</li>
+        }
+    }
+    else
+    {
+        var links = from item in menus
+            where item.Roles.Split(new[]
+                                   {
+                                       ","
+                                   }, StringSplitOptions.RemoveEmptyEntries)
+                .Any(x => new[]
+                          {
+                              "All", "Anonymous"
+                          }.Contains(x))
+            select item;
+        foreach (var link in links)
+        {@:
+            <li> @Html.ActionLink(link.LinkText, link.ActionName, link.ControllerName)</li>
+        }
+    }
+</ul>

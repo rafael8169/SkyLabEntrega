@@ -1,0 +1,72 @@
+﻿@model IEnumerable<SkyLab.Models.Pregrados>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Crear Nuevo", "Create")
+</p>
+<table class="table" id="tablePreGrados">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Horarios.Descripcion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Universidades.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Descripcion)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Horarios.Descripcion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Universidades.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Edit", new
+           {
+               id = item.Id
+           }) |
+                @Html.ActionLink("Detalles", "Details", new
+           {
+               id = item.Id
+           }) |
+                @Html.ActionLink("Eliminar", "Delete", new
+           {
+               id = item.Id
+           })
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#tablePreGrados').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "scrollY": 200,
+                "scrollX": true
+            });
+        });
+    </script>
+}
